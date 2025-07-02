@@ -17,6 +17,7 @@ pipeline {
                     npm ci
                     npm run build
                     ls -a
+                    npm test -- --watchAll=false 
                 '''
             }
         }
@@ -25,8 +26,7 @@ pipeline {
                 echo 'Testing stage'
                 sh '''
                 test -f build/index.html
-                npm test -- --watchAll=false 
-                
+
                 '''
             }
 
