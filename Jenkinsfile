@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        /*
+        
         // Build stage
         stage('Build') {
             agent {
@@ -22,7 +22,7 @@ pipeline {
                 '''
             }
         }
-
+        /*
         // E2E stage
         stage('E2E') {
             agent {
