@@ -43,7 +43,7 @@ pipeline {
         }
 
 
-        /*stage('E2E'){
+        stage('E2E'){
 
             agent {
                 docker {
@@ -55,14 +55,14 @@ pipeline {
 
             steps {
                 sh '''
-                npm install -g serve
+                npm install serve
                 node/modules/.bin/serve -s build & 
                 sleep 10
                 npx playwright test
                 '''
             }
 
-        }*/
+        }
     }
 
     post {
