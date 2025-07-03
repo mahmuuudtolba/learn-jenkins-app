@@ -17,12 +17,11 @@ pipeline {
                     npm ci
                     npm run build
                     ls -a
-                    npm test -- --watchAll=false 
                 '''
             }
         }
         stage('test'){
-            
+
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -33,9 +32,16 @@ pipeline {
             steps {
                 sh '''
                 test -f build/index.html
+                npm test
                 '''
             }
 
+        }
+    }
+
+    post {
+        always {
+            junit "test-results/junit.xml"
         }
     }
 }
