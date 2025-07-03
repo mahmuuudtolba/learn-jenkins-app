@@ -3,7 +3,8 @@ pipeline {
 
     stages {
         /*
-        stage('build') {
+        // Build stage
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -22,81 +23,67 @@ pipeline {
             }
         }
 
-
-        stage('E2E'){
-
-                agent {
-                    docker {
-                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                        reuseNode true
-                        
-                    }
+        // E2E stage
+        stage('E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
                 }
-
-                steps {
-                    sh '''
+            }
+            steps {
+                sh '''
                     npm install serve
                     node_modules/.bin/serve -s build & 
                     sleep 10
                     npx playwright test --reporter=html
-                    '''
-                }
-
-            }
-        */
-
-        stage("Run Tests"){
-            parallel {
-                stage('test'){
-
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                        test -f build/index.html
-                        npm test
-                        '''
-                    }
-
-                }
-
-                }
-
-                stage('test-2'){
-
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                        test -f build/index.html
-                        npm test
-                        '''
-                    }
-
-                }
-
+                '''
             }
         }
-        
+        */
 
-
-
+        // Parallel tests stage
+        stage('Run Tests') {
+            parallel {
+                // First test job
+                stage("TEST-1"){
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            test -f build/index.html
+                            npm test
+                        '''
+                    }
+                }
+                // Second test job
+                stage("TEST-2"){
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            test -f build/index.html
+                            npm test
+                        '''
+                    }
+                }
+            }
+        }
     }
 
     post {
         always {
-            junit "jest-results/junit.xml"
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            // Publish JUnit results
+            junit 'jest-results/junit.xml'
+            
         }
     }
-
+}
