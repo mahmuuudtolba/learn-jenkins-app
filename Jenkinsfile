@@ -42,7 +42,7 @@ pipeline {
                     '''
                 }
 
-            }
+        }
         
 
         stage("Run Tests"){
@@ -65,7 +65,7 @@ pipeline {
 
                 }
 
-                }
+            }
 
                 stage('test-2'){
 
@@ -91,7 +91,7 @@ pipeline {
 
 
 
-    }
+    
 
     post {
         always {
