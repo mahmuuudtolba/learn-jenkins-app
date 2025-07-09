@@ -25,11 +25,10 @@ pipeline {
                 '''
             }
         }
-        */
 
         
 
-
+        
         stage('E2E'){
 
                 agent {
@@ -50,6 +49,9 @@ pipeline {
                 }
 
         }
+
+        */
+
         
 
         stage("Run Tests"){
@@ -94,6 +96,8 @@ pipeline {
             }
         }
 
+        /*
+
         stage('deploy staging') {
             agent {
                 docker {
@@ -114,6 +118,7 @@ pipeline {
                 '''
             }
         }
+
         
         stage('deploy prod') {
             agent {
@@ -156,7 +161,7 @@ pipeline {
                     '''
                 }
 
-        }
+        }*/
 
 
 
