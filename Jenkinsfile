@@ -5,6 +5,7 @@ pipeline {
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
 
+
     stages {
         stage("AWS"){
             agent{
@@ -15,11 +16,15 @@ pipeline {
             }
 
             steps{
-                sh '''
-                aws --version
-                aws configure list
-                
-                '''
+                withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+
+                    sh '''
+                    aws --version
+                    aws configure list
+                    aws s3 ls
+                    
+                    '''
+                    }
             }
         }
 
