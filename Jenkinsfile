@@ -22,6 +22,10 @@ pipeline {
                     aws --version
                     aws configure list
                     aws s3 ls
+                    mkdir temp
+                    cd temp
+                    touch names.txt
+                    aws s3 cp names.txt s3://jenkins-udemy-2025//uploads/
                     
                     '''
                     }
