@@ -19,6 +19,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 
                     sh '''
+                    echo "AWS stage ............ "
                     aws --version
                     aws configure list
                     aws s3 ls
