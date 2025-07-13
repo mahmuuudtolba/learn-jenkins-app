@@ -8,28 +8,9 @@ pipeline {
 
 
     stages {
-        stage("AWS"){
-            agent{
-                docker {
-                    image 'amazon/aws-cli'
-                    args  "--entrypoint=''"
-                }
-            }
 
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 
-                    sh '''
-                    aws --version
-                    echo "Hello S3!" > index.html
-                    aws s3 cp index.html s3://$BUCKET_NAME/uploads/
-                    
-                    '''
-                    }
-            }
-        }
-
-        /*
+        
         stage('build') {
             agent {
                 docker {
@@ -48,34 +29,6 @@ pipeline {
                 '''
             }
         }
-
-        
-
-        
-        stage('E2E'){
-
-                agent {
-                    docker {
-                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                        reuseNode true
-                        
-                    }
-                }
-
-                steps {
-                    sh '''
-                    npm install serve
-                    node_modules/.bin/serve -s build & 
-                    sleep 10
-                    npx playwright test --reporter=html
-                    '''
-                }
-
-        }
-
-        */
-
-        
 
         stage("Run Tests"){
             parallel {
@@ -119,72 +72,28 @@ pipeline {
             }
         }
 
-        /*
-
-        stage('deploy staging') {
-            agent {
+        stage("AWS"){
+            agent{
                 docker {
-                    image 'node:18-alpine'
-                    reuseNode true
+                    image 'amazon/aws-cli'
+                    args  "--entrypoint=''"
                 }
             }
-            steps {
-                sh '''
-                    npm install netlify-cli@20.1.1
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to staging. Side ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build 
-                    
 
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 
-                '''
-            }
-        }
-
-        
-        stage('deploy prod') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    npm install netlify-cli@20.1.1
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to production. Side ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                    
-
-
-                '''
-            }
-        }
-        
-        stage('prod E2E'){
-
-                agent {
-                    docker {
-                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                        reuseNode true
-                        
-                    }
-                }
-
-                environment {
-                    CI_ENVIRONMENT_URL = 'https://delightful-macaron-b5da56.netlify.app'
-                }
-
-                steps {
                     sh '''
-                    npx playwright test --reporter=html
+                    aws --version
+                    echo "Hello S3!" > index.html
+                    aws s3 sync build s3://$BUCKET_NAME/uploads/
+                    
                     '''
-                }
+                    }
+            }
+        }
 
-        }*/
+        
 
 
 
