@@ -21,7 +21,6 @@ pipeline {
                     sh '''
                     aws --version
                     aws configure list
-                    mkdir temp
                     aws s3 ls
                     cd temp
                     touch names.txt
