@@ -3,6 +3,7 @@ pipeline {
     environment {
         NETLIFY_SITE_ID = '81691a84-955a-40a8-b7f4-9f89fb0fb084'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        BUCKET_NAME = 'jenkins-udemy-2025'
     }
 
 
@@ -20,11 +21,8 @@ pipeline {
 
                     sh '''
                     aws --version
-                    aws configure list
-                    aws s3 ls
-                    cd temp
-                    touch names.txt
-                    aws s3 cp names.txt s3://jenkins-udemy-2025/uploads/
+                    echo "Hello S3!" > index.html
+                    aws s3 cp index.html s3://$BUCKET_NAME/uploads/
                     
                     '''
                     }
