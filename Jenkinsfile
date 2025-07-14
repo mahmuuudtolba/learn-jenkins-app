@@ -29,12 +29,12 @@ pipeline {
                 '''
             }
 
-            post {
-                success {
-                    echo "Stashing build artifacts"
-                    stash name: 'build-output'  , includes: 'build/**'
-                }
-            }
+            // post {
+            //     success {
+            //         echo "Stashing build artifacts"
+            //         stash name: 'build-output'  , includes: 'build/**'
+            //     }
+            // }
         }
 
 
@@ -48,8 +48,8 @@ pipeline {
             }
 
             steps{
-                echo "unstashing build artifacts ..."
-                unstash 'build-output'
+                // echo "unstashing build artifacts ..."
+                // unstash 'build-output'
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 
                     sh '''
