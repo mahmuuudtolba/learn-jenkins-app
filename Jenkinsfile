@@ -28,59 +28,28 @@ pipeline {
                     ls -a
                 '''
             }
-        }
 
-        stage("Run Tests"){
-            parallel {
-                stage('test'){
-
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                        test -f build/index.html
-                        npm test
-                        '''
-                    }
-
+            post {
+                success {
+                    echo "Stashing build artifacts"
+                    stash name: 'build-output'  , includes: 'build/**'
                 }
-
-
-                stage('test-2'){
-
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                        test -f build/index.html
-                        npm test
-                        '''
-                    }
-
-                }
-
             }
         }
+
 
         stage("AWS"){
             agent{
                 docker {
                     image 'amazon/aws-cli'
                     args  "--entrypoint=''"
+                    reuseNode true
                 }
             }
 
             steps{
+                echo "unstashing build artifacts ..."
+                unstash 'build-output'
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 
                     sh '''
